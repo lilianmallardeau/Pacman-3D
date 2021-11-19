@@ -30,5 +30,7 @@
 #define FOV                         80.0f
 #define ASPECT_RATIO                4.0f / 3.0f
 
+// DEBUG OPTIONS
+#define PRINT_FPS                   1
 
 #endif //PARAMETERS_H

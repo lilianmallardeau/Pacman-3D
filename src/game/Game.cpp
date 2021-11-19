@@ -120,6 +120,10 @@ void Game::loop() {
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
+        #if PRINT_FPS == 1
+        std::cout << "FPS: " << 1.0f/deltaTime << std::endl;
+        #endif
+
         glfwPollEvents();
         processInput(deltaTime);
         processMouseInput(deltaTime);
