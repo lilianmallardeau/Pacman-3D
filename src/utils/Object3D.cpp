@@ -26,7 +26,7 @@ void Object3D::setScale(float scaleFactor, bool updateTransform) {
 }
 
 void Object3D::setRotation(float x_rot, float y_rot, float z_rot, bool updateTransform) {
-    translationMatrix =
+    rotationMatrix =
             glm::rotate(glm::radians(x_rot), glm::vec3(1, 0, 0)) *
             glm::rotate(glm::radians(y_rot), glm::vec3(0, 1, 0)) *
             glm::rotate(glm::radians(z_rot), glm::vec3(0, 0, 1));
