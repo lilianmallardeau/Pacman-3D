@@ -13,6 +13,8 @@ if(ASSIMP_FOUND)
 	include_directories(${ASSIMP_INCLUDE_DIR})
 endif()
 
+find_package(SFML COMPONENTS audio REQUIRED)
+
 #set(ASSIMP_LIBRARY_DIRS "lib/assimp/build/code")
 #set(ASSIMP_INCLUDE_DIRS "lib/assimp/include" "lib/assimp/build/include")
 #include_directories(${ASSIMP_INCLUDE_DIRS})
@@ -30,4 +32,5 @@ target_link_libraries(Pacman_3D
 	glfw
 	glm
 	${ASSIMP_LIBRARIES}
+	sfml-audio
 	OpenGL::GL)

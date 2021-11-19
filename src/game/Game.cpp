@@ -13,6 +13,10 @@
 
 #include "../parameters.h"
 
+#if ENABLE_SOUND == 1
+    #include <SFML/Audio.hpp>
+#endif
+
 
 bool Game::init() {
     srand(time(NULL)); //NOLINT(cert-msc51-cpp, modernize-use-nullptr)
@@ -32,6 +36,17 @@ bool Game::init() {
         glfwSetInputMode(Renderer::context, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
     glfwGetCursorPos(Renderer::context, &x_mousePos, &y_mousePos);
     // ------------ Mouse ------------
+
+    // ------------ Sounds ------------
+#if ENABLE_SOUND == 1
+    startSoundBuffer.loadFromFile("assets/sounds/pacman_beginning.wav");
+    chompSoundBuffer.loadFromFile("assets/sounds/pacman_chomp.wav");
+    deathSoundBuffer.loadFromFile("assets/sounds/pacman_death.wav");
+    startSound.setBuffer(startSoundBuffer);
+    chompSound.setBuffer(chompSoundBuffer);
+    deathSound.setBuffer(deathSoundBuffer);
+#endif
+    // ------------ Sounds ------------
 
     map.init();
     pacmanPosition = {(float) map.getInitialPosition().x, (float) map.getInitialPosition().y, 0.6f};
@@ -115,6 +130,10 @@ void Game::loop() {
     double deltaTime = 0.0;	// Time between current frame and last frame
     double lastFrame = 0.0; // Time of last frame
 
+    #if ENABLE_SOUND == 1
+    startSound.play();
+    #endif
+
     while (!glfwWindowShouldClose(Renderer::context)) {
         double currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
@@ -128,7 +147,7 @@ void Game::loop() {
         processInput(deltaTime);
         processMouseInput(deltaTime);
 
-        if (!checkForGameEnd()) {
+        if (!gameOver && !checkForGameEnd()) {
             // Move ghosts
             for (Ghost *ghost: ghosts) {
                 if (map.canTurn(ghost->getPosition(), ghost->getDirection())) {
@@ -144,8 +163,12 @@ void Game::loop() {
             }
 
             // Pacman
-            if (map.removePellet(Position(pacmanPosition.x, pacmanPosition.y)))
+            if (map.removePellet(Position(pacmanPosition.x, pacmanPosition.y))) {
                 std::cout << map.count(MapElement::PELLET) << " pellets left!" << std::endl;
+                #if ENABLE_SOUND == 1
+                chompSound.play();
+                #endif
+            }
 
             // Prevent Pacman from going outside tunnels
             if (!map.isTunnel(Position(pacmanPosition.x, pacmanPosition.y)))
@@ -167,7 +190,10 @@ void Game::loop() {
             glfwSwapBuffers(Renderer::context);
         }
         else {
-            glfwSetWindowShouldClose(Renderer::context, GLFW_TRUE);
+            #if ENABLE_SOUND == 1
+            if (deathSound.getStatus() == sf::Sound::Status::Stopped)
+            #endif
+                glfwSetWindowShouldClose(Renderer::context, GLFW_TRUE);
         }
     }
     glfwTerminate();
@@ -230,6 +256,13 @@ bool Game::checkForSuccess() const {
     return map.count(MapElement::PELLET) == 0;
 }
 
-bool Game::checkForGameEnd() const {
-    return checkForCollision() || checkForSuccess();
+bool Game::checkForGameEnd() {
+    if (checkForCollision()) {
+        gameOver = true;
+        #if ENABLE_SOUND == 1
+        if (deathSound.getStatus() != sf::Sound::Status::Playing) deathSound.play();
+        #endif
+        return true;
+    }
+    return checkForSuccess();
 }

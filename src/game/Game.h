@@ -8,9 +8,13 @@
 #include <string>
 #include <vector>
 
+#include "../parameters.h"
 #include "Map.h"
 #include "Ghost.h"
 
+#if ENABLE_SOUND == 1
+    #include <SFML/Audio.hpp>
+#endif
 
 class Game {
     private:
@@ -22,10 +26,17 @@ class Game {
         glm::mat4 viewMatrix, projectionMatrix;
         std::vector<Ghost*> ghosts;
         glm::mat4 *ghostTransformMatrices;
+        bool gameOver = false;
 
         Model* ghost_model{}, *pellet_model{};
 
         Program *obj_shader{};
+
+        // Sound
+        #if ENABLE_SOUND == 1
+        sf::SoundBuffer startSoundBuffer, chompSoundBuffer, deathSoundBuffer;
+        sf::Sound startSound, chompSound, deathSound;
+        #endif
 
     public:
         explicit Game(const std::string & level_file) : map(level_file) {};
@@ -46,7 +57,7 @@ class Game {
 
         [[nodiscard]] bool checkForCollision() const;
         [[nodiscard]] bool checkForSuccess() const;
-        [[nodiscard]] bool checkForGameEnd() const;
+        [[nodiscard]] bool checkForGameEnd();
 
 };
 

@@ -32,5 +32,6 @@
 
 // DEBUG OPTIONS
 #define PRINT_FPS                   1
+#define ENABLE_SOUND                1
 
 #endif //PARAMETERS_H
