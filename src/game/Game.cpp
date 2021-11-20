@@ -147,7 +147,7 @@ void Game::loop() {
         processInput(deltaTime);
         processMouseInput(deltaTime);
 
-        if (!gameOver && !checkForGameEnd()) {
+        if (!won && !gameOver && !checkForGameEnd()) {
             // Move ghosts
             for (Ghost *ghost: ghosts) {
                 if (map.canTurn(ghost->getPosition(), ghost->getDirection())) {
@@ -191,7 +191,7 @@ void Game::loop() {
         }
         else {
             #if ENABLE_SOUND == 1
-            if (deathSound.getStatus() == sf::Sound::Status::Stopped)
+            if (deathSound.getStatus() == sf::Sound::Status::Stopped && startSound.getStatus() == sf::Sound::Status::Stopped)
             #endif
                 glfwSetWindowShouldClose(Renderer::context, GLFW_TRUE);
         }
@@ -271,5 +271,12 @@ bool Game::checkForGameEnd() {
         #endif
         return true;
     }
-    return checkForSuccess();
+    if (checkForSuccess()) {
+        won = true;
+        #if ENABLE_SOUND == 1
+        if (startSound.getStatus() != sf::Sound::Status::Playing) startSound.play();
+        #endif
+        return true;
+    }
+    return false;
 }

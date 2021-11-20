@@ -26,7 +26,7 @@ class Game {
         glm::mat4 viewMatrix, projectionMatrix;
         std::vector<Ghost*> ghosts;
         glm::mat4 *ghostTransformMatrices;
-        bool gameOver = false;
+        bool gameOver = false, won = false;
 
         Model *ghostModel{}, *pelletModel{};
 
