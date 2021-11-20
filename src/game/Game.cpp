@@ -55,7 +55,7 @@ bool Game::init() {
 
     projectionMatrix = glm::perspective(glm::radians(FOV), ASPECT_RATIO, 1e-4f, 100.0f);
 
-    obj_shader = new Program("src/shaders/objects/vertex.shader", "src/shaders/objects/fragment.shader");
+    objectsShader = new Program("src/shaders/objects/vertex.shader", "src/shaders/objects/fragment.shader");
 
     loadModelsAndTextures();
 
@@ -65,7 +65,7 @@ bool Game::init() {
         do {
             ghostPos = map.getRandomPosition(MapElement::PELLET);
         } while (ghostPos % map.getInitialPosition() < MIN_GHOST_INIT_DISTANCE);
-        Ghost* ghost = new Ghost(ghostPos, ghost_model);
+        Ghost* ghost = new Ghost(ghostPos, ghostModel);
         ghost->obj.setTransformMatrixPointer(&ghostTransformMatrices[i]);
         ghosts.push_back(ghost);
     }
@@ -89,10 +89,10 @@ void Game::loadModelsAndTextures() {
             glm::rotate(glm::radians(rotation_pellets.z), glm::vec3{0, 0, 1}) *
             glm::scale(glm::vec3{PELLET_MODEL_SCALING});
 
-    ghost_model = new Model(GHOST_MODEL, ghostModelTransform);
-    std::for_each(ghost_model->meshes().cbegin(), ghost_model->meshes().cend(), [](const Mesh& mesh){mesh.setupBuffers();});
-    pellet_model = new Model(PELLET_MODEL, pelletModelTransform);
-    std::for_each(pellet_model->meshes().cbegin(), pellet_model->meshes().cend(), [](const Mesh& mesh){mesh.setupBuffers();});
+    ghostModel = new Model(GHOST_MODEL, ghostModelTransform);
+    std::for_each(ghostModel->meshes().cbegin(), ghostModel->meshes().cend(), [](const Mesh& mesh){mesh.setupBuffers();});
+    pelletModel = new Model(PELLET_MODEL, pelletModelTransform);
+    std::for_each(pelletModel->meshes().cbegin(), pelletModel->meshes().cend(), [](const Mesh& mesh){mesh.setupBuffers();});
 
     // TODO load textures
     // load textures...
@@ -233,24 +233,24 @@ void Game::renderPellets() {
             }
         }
     }
-    obj_shader->setUniformMatrix4("u_transformMatrices", transformMatrices.data(), transformMatrices.size());
-    obj_shader->setUniform<float>("u_objectColor", {0.1f, 0.4f, 1.0f, 0.7f});
-    obj_shader->setUniform<float>("u_ambiantIntensity", {1.8f});
-    obj_shader->setUniform<float>("u_diffuseIntensity", {0.0f});
-    obj_shader->setUniform<float>("u_specularIntensity", {0.0f});
-    for (const auto& mesh : pellet_model->meshes())
-        Renderer::DrawInstances(*mesh.vao, *mesh.ibo, *obj_shader, transformMatrices.size());
+    objectsShader->setUniformMatrix4("u_transformMatrices", transformMatrices.data(), transformMatrices.size());
+    objectsShader->setUniform<float>("u_objectColor", {0.1f, 0.4f, 1.0f, 0.7f});
+    objectsShader->setUniform<float>("u_ambiantIntensity", {1.8f});
+    objectsShader->setUniform<float>("u_diffuseIntensity", {0.0f});
+    objectsShader->setUniform<float>("u_specularIntensity", {0.0f});
+    for (const auto& mesh : pelletModel->meshes())
+        Renderer::DrawInstances(*mesh.vao, *mesh.ibo, *objectsShader, transformMatrices.size());
 }
 
 void Game::renderGhosts() {
-    setCommonUniforms(*obj_shader);
-    obj_shader->setUniformMatrix4("u_transformMatrices", ghostTransformMatrices, GHOSTS_NUMBER);
-    obj_shader->setUniform<float>("u_objectColor", {1.0f, 1.0f, 1.0f, 1.0f});
-    obj_shader->setUniform<float>("u_ambiantIntensity", {0.1f});
-    obj_shader->setUniform<float>("u_diffuseIntensity", {1.0f});
-    obj_shader->setUniform<float>("u_specularIntensity", {0.5f});
-    for (const auto& mesh : ghost_model->meshes())
-        Renderer::DrawInstances(*mesh.vao, *mesh.ibo, *obj_shader, GHOSTS_NUMBER);
+    setCommonUniforms(*objectsShader);
+    objectsShader->setUniformMatrix4("u_transformMatrices", ghostTransformMatrices, GHOSTS_NUMBER);
+    objectsShader->setUniform<float>("u_objectColor", {1.0f, 1.0f, 1.0f, 1.0f});
+    objectsShader->setUniform<float>("u_ambiantIntensity", {0.1f});
+    objectsShader->setUniform<float>("u_diffuseIntensity", {1.0f});
+    objectsShader->setUniform<float>("u_specularIntensity", {0.5f});
+    for (const auto& mesh : ghostModel->meshes())
+        Renderer::DrawInstances(*mesh.vao, *mesh.ibo, *objectsShader, GHOSTS_NUMBER);
 }
 
 bool Game::checkForCollision() const {

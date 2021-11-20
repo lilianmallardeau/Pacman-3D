@@ -28,9 +28,9 @@ class Game {
         glm::mat4 *ghostTransformMatrices;
         bool gameOver = false;
 
-        Model* ghost_model{}, *pellet_model{};
+        Model *ghostModel{}, *pelletModel{};
 
-        Program *obj_shader{};
+        Program *objectsShader{};
 
         // Sound
         #if ENABLE_SOUND == 1
