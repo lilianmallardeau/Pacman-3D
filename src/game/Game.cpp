@@ -53,7 +53,7 @@ bool Game::init() {
     previousPacmanPosition = pacmanPosition;
     cameraDirection = glm::vec3(1, 0, 0);
 
-    projectionMatrix = glm::perspective(glm::radians(FOV), ASPECT_RATIO, 0.1f, 100.0f);
+    projectionMatrix = glm::perspective(glm::radians(FOV), ASPECT_RATIO, 1e-4f, 100.0f);
 
     obj_shader = new Program("src/shaders/objects/vertex.shader", "src/shaders/objects/fragment.shader");
 
