@@ -139,6 +139,10 @@ void Game::loop() {
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
+        int windowWidth, windowHeight;
+        glfwGetWindowSize(Renderer::context, &windowWidth, &windowHeight);
+        glViewport(0, 0, windowWidth, windowHeight);
+
         #if PRINT_FPS == 1
         std::cout << "FPS: " << 1.0f/deltaTime << std::endl;
         #endif
