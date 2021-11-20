@@ -31,12 +31,15 @@ void Model::processMesh(aiMesh *mesh, const aiScene *scene, const aiMatrix4x4& t
     std::vector<unsigned int> indices;
     for (unsigned int i = 0; i < mesh->mNumVertices; ++i) {
         Vertex v{};
-        auto transformedVertex = transform * mesh->mVertices[i];
-        if (mesh->HasPositions())
+        if (mesh->HasPositions()) {
+            auto transformedVertex = transform * mesh->mVertices[i];
             v.position = {transformedVertex.x, transformedVertex.y, transformedVertex.z};
-        // TODO add transform to normals
-        if (mesh->HasNormals())
-            v.normal = {mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z};
+        }
+        if (mesh->HasNormals()) {
+            aiMatrix3x3 normalTransform(transform);
+            auto transformedNormal = normalTransform.Inverse().Transpose() * mesh->mNormals[i];
+            v.normal = {transformedNormal.x, transformedNormal.y, transformedNormal.z};
+        }
         if (mesh->HasTextureCoords(0))
             v.texCoords = {mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y};
         vertices.push_back(v);

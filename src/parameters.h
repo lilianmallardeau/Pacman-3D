@@ -17,21 +17,22 @@
 #define GROUND_COLOR                0.2f, 0.2f, 0.2f
 
 // MODELS
-#define GHOST_MODEL                 "assets/3d_models/teacup/teacup.obj"
+#define GHOST_MODEL                 "assets/3d_models/kodama/kodama.obj"
+#define GHOST_MODEL_SCALING         0.1f
+#define GHOST_MODEL_TRANSLATION     0.0f, 0.0f, 0.4f
+#define GHOST_MODEL_ROTATION        90.0f, 90.0f, 0.0f // Rotation of the model around the x, y, z axis, in degrees
 #define PELLET_MODEL                "assets/3d_models/diamond/diamond.obj"
-#define GHOST_MODEL_SCALING         0.5f
 #define PELLET_MODEL_SCALING        0.1f
-#define GHOST_MODEL_TRANSLATION     0.0f, 0.0f, 0.0f
 #define PELLET_MODEL_TRANSLATION    0.0f, 0.0f, 0.2f
-#define GHOST_MODEL_ROTATION        90.0f, 0.0f, 0.0f // Degrees
-#define PELLET_MODEL_ROTATION       90.0f, 0.0f, 0.0f // Degrees
+#define PELLET_MODEL_ROTATION       90.0f, 0.0f, 0.0f // Rotation of the model around the x, y, z axis, in degrees
 
 // CAMERA & VIEW
 #define FOV                         80.0f
 #define ASPECT_RATIO                4.0f / 3.0f
 
-// DEBUG OPTIONS
-#define PRINT_FPS                   1
+// DEBUG OPTIONS AND STUFF
+#define PRINT_FPS                   0
 #define ENABLE_SOUND                1
+
 
 #endif //PARAMETERS_H

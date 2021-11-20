@@ -11,9 +11,10 @@ uniform mat4 u_viewProjMatrix;
 uniform mat4 u_transformMatrices[1000];
 
 void main() {
-    gl_Position = u_viewProjMatrix * u_transformMatrices[gl_InstanceID] * vec4(position, 1);
+    vec4 worldPosition = u_transformMatrices[gl_InstanceID] * vec4(position, 1);
+    gl_Position = u_viewProjMatrix * worldPosition;
 
-    v_position = position;
-    v_normal = normal;
+    v_position = vec3(worldPosition); // worldPosition.w;
+    v_normal = normalize(mat3(transpose(inverse(u_transformMatrices[gl_InstanceID]))) * normal);
     v_texCoord = texCoord;
 }

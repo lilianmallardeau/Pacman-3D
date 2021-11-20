@@ -209,6 +209,7 @@ void Game::setCommonUniforms(Program& shader) {
     shader.setUniformMatrix4("u_viewProjMatrix", projectionMatrix * viewMatrix);
     shader.setUniform<float>("u_pacmanPosition", {pacmanPosition.x, pacmanPosition.y, pacmanPosition.z}, false);
     shader.setUniform<float>("u_lightPosition", {pacmanPosition.x, pacmanPosition.y, pacmanPosition.z}, false);
+//    shader.setUniform<float>("u_lightPosition", {(float) map.width / 2.0f, (float) map.height / 2.0f, 5.0f}, false);
 }
 
 void Game::renderGround() {
@@ -233,7 +234,10 @@ void Game::renderPellets() {
         }
     }
     obj_shader->setUniformMatrix4("u_transformMatrices", transformMatrices.data(), transformMatrices.size());
-    obj_shader->setUniform<float>("u_Color", {0.1f, 0.3f, 1.0f, 0.7f});
+    obj_shader->setUniform<float>("u_objectColor", {0.1f, 0.4f, 1.0f, 0.7f});
+    obj_shader->setUniform<float>("u_ambiantIntensity", {1.8f});
+    obj_shader->setUniform<float>("u_diffuseIntensity", {0.0f});
+    obj_shader->setUniform<float>("u_specularIntensity", {0.0f});
     for (const auto& mesh : pellet_model->meshes())
         Renderer::DrawInstances(*mesh.vao, *mesh.ibo, *obj_shader, transformMatrices.size());
 }
@@ -241,7 +245,10 @@ void Game::renderPellets() {
 void Game::renderGhosts() {
     setCommonUniforms(*obj_shader);
     obj_shader->setUniformMatrix4("u_transformMatrices", ghostTransformMatrices, GHOSTS_NUMBER);
-    obj_shader->setUniform<float>("u_Color", {0.0f, 1.0f, 0.0f, 0.8f});
+    obj_shader->setUniform<float>("u_objectColor", {1.0f, 1.0f, 1.0f, 1.0f});
+    obj_shader->setUniform<float>("u_ambiantIntensity", {0.1f});
+    obj_shader->setUniform<float>("u_diffuseIntensity", {1.0f});
+    obj_shader->setUniform<float>("u_specularIntensity", {0.5f});
     for (const auto& mesh : ghost_model->meshes())
         Renderer::DrawInstances(*mesh.vao, *mesh.ibo, *obj_shader, GHOSTS_NUMBER);
 }

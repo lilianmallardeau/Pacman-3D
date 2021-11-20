@@ -12,10 +12,10 @@ void Ghost::updateObjectPosition() {
 void Ghost::setDirection(Direction dir) {
     direction = dir;
     switch (dir) {
-        case Direction::UP: obj.setRotation(0, 0, 0); break;
-        case Direction::RIGHT: obj.setRotation(0, 0, 90); break;
-        case Direction::DOWN: obj.setRotation(0, 0, 180); break;
-        case Direction::LEFT: obj.setRotation(0, 0, 270); break;
+        case Direction::RIGHT: obj.setRotation(0, 0, 0); break;
+        case Direction::UP: obj.setRotation(0, 0, 90); break;
+        case Direction::LEFT: obj.setRotation(0, 0, 180); break;
+        case Direction::DOWN: obj.setRotation(0, 0, 270); break;
         default: break;
     }
 }
